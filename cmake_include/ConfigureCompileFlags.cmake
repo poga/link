@@ -34,6 +34,7 @@ if(UNIX)
       "-Wno-padded"
       "-Wno-poison-system-directories"
       "-Wno-reserved-id-macro"
+      "-Wno-function-effects"
       "-Wno-unknown-warning-option"
       "-Wno-unsafe-buffer-usage"
       "-Wno-unused-member-function"
