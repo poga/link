@@ -103,18 +103,30 @@ private:
   void run()
   {
     using namespace std::chrono;
-    const auto intervalUs = microseconds(
+    const auto bufferDuration = microseconds(
       static_cast<long long>(1e6 * static_cast<double>(mBufferSize) / mSampleRate));
+
+    // Advance hostTime by exact buffer duration rather than reading wall clock
+    // each iteration. sleep_for overshoots unpredictably, causing beat positions
+    // to advance faster than the audio content. The receiver then time-stretches
+    // to compensate, resulting in slowed audio.
+    auto hostTime = mLink.clock().micros();
 
     while (mRunning)
     {
-      auto hostTime = mLink.clock().micros();
       auto sessionState = mLink.captureAudioSessionState();
       mLink.commitAudioSessionState(sessionState);
 
       mLoopPlayer(mBufferSize, sessionState, mSampleRate, hostTime, 4.0);
 
-      std::this_thread::sleep_for(intervalUs);
+      hostTime = hostTime + bufferDuration;
+
+      // Sleep until next ideal host time, skipping if already late
+      auto now = mLink.clock().micros();
+      if (hostTime > now)
+      {
+        std::this_thread::sleep_for(hostTime - now);
+      }
     }
   }
 
