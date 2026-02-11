@@ -173,6 +173,8 @@ configure_link_test_executable(LinkUtilTest)
 add_executable(LinkRadioTest
   ${CMAKE_SOURCE_DIR}/tests/linkradio/WavLoader_test.cpp
   ${CMAKE_SOURCE_DIR}/tests/linkradio/Manifest_test.cpp
+  ${CMAKE_SOURCE_DIR}/tests/linkradio/Scheduler_test.cpp
+  ${CMAKE_SOURCE_DIR}/tests/linkradio/StemStore_test.cpp
   ${CMAKE_SOURCE_DIR}/examples/linkradio/WavLoader.cpp
   ${CMAKE_SOURCE_DIR}/examples/linkradio/Manifest.cpp
   ableton/test/catch/CatchMain.cpp
