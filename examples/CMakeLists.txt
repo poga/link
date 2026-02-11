@@ -238,3 +238,23 @@ target_compile_definitions(LinkHutSilent PRIVATE
 
 configure_linkhut_executable(LinkHutSilent)
 source_group("LinkHutSilent" FILES ${linkhutsilent_HEADERS} ${linkhutsilent_SOURCES})
+
+
+#  _     _       _    ____           _ _
+# | |   (_)_ __ | | _|  _ \ __ _  __| (_) ___
+# | |   | | '_ \| |/ / |_) / _` |/ _` | |/ _ \
+# | |___| | | | |   <|  _ < (_| | (_| | | (_) |
+# |_____|_|_| |_|_|\_\_| \_\__,_|\__,_|_|\___/
+#
+
+add_executable(LinkRadio
+  linkradio/main.cpp
+  linkradio/WavLoader.cpp
+  linkradio/Manifest.cpp
+  linkradio/Fetcher.cpp
+)
+target_include_directories(LinkRadio PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/linkradio
+)
+target_link_libraries(LinkRadio Ableton::Link Json)
+target_compile_definitions(LinkRadio PRIVATE LINK_AUDIO=1)

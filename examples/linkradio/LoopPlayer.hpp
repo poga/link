@@ -11,8 +11,6 @@
 namespace linkradio
 {
 
-static const std::array<std::string, 4> kStemNames = {"drums", "bass", "harmony", "melody"};
-
 template <typename Link>
 class LoopPlayer
 {
