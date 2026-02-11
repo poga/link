@@ -183,4 +183,7 @@ target_include_directories(LinkRadioTest PRIVATE
   ${CMAKE_SOURCE_DIR}/examples/linkradio
 )
 target_link_libraries(LinkRadioTest Catch::Catch Ableton::Link Json)
+target_compile_definitions(LinkRadioTest PRIVATE
+  LINKRADIO_TEST_FIXTURES="${CMAKE_SOURCE_DIR}/tests/linkradio/fixtures"
+)
 add_test(NAME LinkRadioTest COMMAND LinkRadioTest)

@@ -1,0 +1,18 @@
+{
+  "sections": [{
+    "start_time": "2020-01-01T00:00:00Z",
+    "end_time": "2030-12-31T23:59:59Z",
+    "loop_duration_seconds": 30,
+    "loops": [{
+      "id": "drum_loop",
+      "bpm": 104.0,
+      "beats": 8,
+      "stems": {
+        "drums": "loop.wav",
+        "bass": "",
+        "harmony": "",
+        "melody": ""
+      }
+    }]
+  }]
+}

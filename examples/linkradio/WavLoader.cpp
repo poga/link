@@ -34,6 +34,7 @@ WavData loadWav(const std::string& path)
   if (readTag() != "WAVE") return {};
 
   WavData result;
+  uint16_t bitsPerSample = 0;
   while (file.good())
   {
     auto chunkId = readTag();
@@ -46,15 +47,44 @@ WavData loadWav(const std::string& path)
       result.sampleRate = read32();
       read32(); // byte rate
       read16(); // block align
-      auto bitsPerSample = read16();
-      if (bitsPerSample != 16) return {};
+      bitsPerSample = read16();
+      if (bitsPerSample != 16 && bitsPerSample != 24) return {};
       if (chunkSize > 16) file.seekg(chunkSize - 16, std::ios::cur);
     }
     else if (chunkId == "data")
     {
-      auto numSamples = chunkSize / sizeof(int16_t);
-      result.samples.resize(numSamples);
-      file.read(reinterpret_cast<char*>(result.samples.data()), chunkSize);
+      uint32_t bytesPerSample = bitsPerSample / 8;
+      uint32_t numChannels = result.numChannels > 0 ? result.numChannels : 1;
+      auto numFrames = chunkSize / (bytesPerSample * numChannels);
+
+      // Read raw data
+      std::vector<uint8_t> raw(chunkSize);
+      file.read(reinterpret_cast<char*>(raw.data()), chunkSize);
+
+      // Convert to mono 16-bit
+      result.samples.resize(numFrames);
+      for (size_t i = 0; i < numFrames; ++i)
+      {
+        int32_t mixedSample = 0;
+        for (uint32_t ch = 0; ch < numChannels; ++ch)
+        {
+          size_t offset = (i * numChannels + ch) * static_cast<size_t>(bytesPerSample);
+          int32_t sample = 0;
+          if (bitsPerSample == 16)
+          {
+            sample = static_cast<int16_t>(raw[offset] | (raw[offset + 1] << 8));
+          }
+          else // 24-bit
+          {
+            sample = raw[offset] | (raw[offset + 1] << 8) | (raw[offset + 2] << 16);
+            if (sample & 0x800000) sample |= ~0xFFFFFF; // sign extend
+            sample >>= 8; // scale 24-bit down to 16-bit range
+          }
+          mixedSample += sample;
+        }
+        result.samples[i] = static_cast<int16_t>(mixedSample / static_cast<int32_t>(numChannels));
+      }
+      result.numChannels = 1;
       break;
     }
     else
