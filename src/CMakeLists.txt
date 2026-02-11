@@ -162,3 +162,21 @@ add_executable(LinkUtilTest
   ${link_util_test_SOURCES}
 )
 configure_link_test_executable(LinkUtilTest)
+
+#  _     _       _    ____           _ _       _____         _
+# | |   (_)_ __ | | _|  _ \ __ _  __| (_) ___ |_   _|__  ___| |_
+# | |   | | '_ \| |/ / |_) / _` |/ _` | |/ _ \  | |/ _ \/ __| __|
+# | |___| | | | |   <|  _ < (_| | (_| | | (_) | | |  __/\__ \ |_
+# |_____|_|_| |_|_|\_\_| \_\__,_|\__,_|_|\___/  |_|\___||___/\__|
+#
+
+add_executable(LinkRadioTest
+  ${CMAKE_SOURCE_DIR}/tests/linkradio/WavLoader_test.cpp
+  ${CMAKE_SOURCE_DIR}/examples/linkradio/WavLoader.cpp
+  ableton/test/catch/CatchMain.cpp
+)
+target_include_directories(LinkRadioTest PRIVATE
+  ${CMAKE_SOURCE_DIR}/examples/linkradio
+)
+target_link_libraries(LinkRadioTest Catch::Catch Ableton::Link)
+add_test(NAME LinkRadioTest COMMAND LinkRadioTest)
